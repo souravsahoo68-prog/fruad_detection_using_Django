@@ -1,0 +1,21 @@
+{% extends 'fraud_app/base.html' %}
+{% block title %}Upload CSV{% endblock %}
+{% block content %}
+
+<h2 class="text-center mb-4">📤 Upload Transaction CSV</h2>
+
+<form method="post" enctype="multipart/form-data" class="card shadow p-4">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="csv_file" class="form-label">Select CSV File</label>
+        <input type="file" name="csv_file" id="csv_file" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
+
+<div class="mt-3">
+    <p><strong>Note:</strong> Your CSV must include columns like 
+    <code>transaction_id, customer_id, amount, transaction_type, timestamp, location, merchant, channel, status</code>.</p>
+</div>
+
+{% endblock %}

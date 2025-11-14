@@ -1,0 +1,44 @@
+{% extends 'fraud_app/base.html' %}
+{% block title %}Transactions{% endblock %}
+{% block content %}
+
+<h2 class="mb-4 text-center">💰 All Transactions</h2>
+
+<table class="table table-bordered table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Customer ID</th>
+            <th>Amount</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Merchant</th>
+            <th>Location</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for txn in transactions %}
+        <tr>
+            <td>{{ txn.transaction_id }}</td>
+            <td>{{ txn.customer_id }}</td>
+            <td>₹{{ txn.amount }}</td>
+            <td>{{ txn.transaction_type }}</td>
+            <td>
+                {% if txn.status == 'Failed' %}
+                    <span class="badge bg-danger">Failed</span>
+                {% else %}
+                    <span class="badge bg-success">Success</span>
+                {% endif %}
+            </td>
+            <td>{{ txn.merchant }}</td>
+            <td>{{ txn.location }}</td>
+            <td>{{ txn.timestamp }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8" class="text-center">No transactions available.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

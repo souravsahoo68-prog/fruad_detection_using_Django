@@ -1,0 +1,108 @@
+{% extends 'fraud_app/base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Fraud Alerts Dashboard</h2>
+
+    <!-- Section 1: High Value Transactions -->
+    <div class="card mb-4">
+        <div class="card-header bg-danger text-white">
+            High Value Transactions (Possible Fraud)
+        </div>
+        <div class="card-body">
+            {% if high_value %}
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Customer ID</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in high_value %}
+                        <tr>
+                            <td>{{ t.transaction_id }}</td>
+                            <td>{{ t.customer_id }}</td>
+                            <td>{{ t.amount }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-muted">No high-value transactions found.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Section 2: Customers with Failed Transactions -->
+    <div class="card mb-4">
+        <div class="card-header bg-warning">
+            Customers with Multiple Failed Transactions
+        </div>
+        <div class="card-body">
+            {% if failed_customers %}
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Customer ID</th>
+                            <th>Failed Transaction Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in failed_customers %}
+                        <tr>
+                            <td>{{ c.customer_id }}</td>
+                            <td>{{ c.failed_count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-muted">No repeated failed transactions found.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Section 3: Chart Visualization -->
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            Top 10 Customers by Total Transaction Amount
+        </div>
+        <div class="card-body">
+            <canvas id="fraudChart" style="height: 400px;"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('fraudChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ labels|safe }},
+            datasets: [{
+                label: 'Total Amount (₹)',
+                data: {{ data|safe }},
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true, position: 'top' },
+                title: {
+                    display: true,
+                    text: 'Top 10 Customers by Transaction Value'
+                }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
+{% endblock %}

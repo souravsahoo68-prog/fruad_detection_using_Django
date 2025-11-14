@@ -1,0 +1,51 @@
+{% extends 'fraud_app/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+<h2 class="mb-4 text-center">📊 Fraud Detection Dashboard</h2>
+
+<div class="row mb-4 text-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-success">
+            <div class="card-body">
+                <h5>Total Transactions</h5>
+                <h3 class="text-success">{{ total_txns }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm border-danger">
+            <div class="card-body">
+                <h5>Suspicious Transactions</h5>
+                <h3 class="text-danger">{{ suspicious_count }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4 class="text-center mt-4">📈 Monthly Transaction Trends</h4>
+<canvas id="txnChart" height="100"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('txnChart').getContext('2d');
+    const txnChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ months|safe }},
+            datasets: [{
+                label: 'Transactions per Month',
+                data: {{ counts|safe }},
+                borderColor: '#007bff',
+                fill: false,
+                tension: 0.2
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom' } }
+        }
+    });
+</script>
+
+{% endblock %}
